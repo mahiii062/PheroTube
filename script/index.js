@@ -13,6 +13,21 @@ function loadVideos() {
         .then(data => displayVideos(data.videos));
 }
 
+const loadCategoriesVideos = (id) => {
+    console.log(id);
+    const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
+    console.log(url);
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const clickButton = document.getElementById(`btn-${id}`);
+            clickButton.classList.add("active");
+            console.log(clickButton);
+            displayVideos(data.category);
+        });
+};
+
 
 // category
 // :
@@ -50,10 +65,11 @@ function displayCategories(categories) {
     // loop operation on array of object
     for (let cat of categories) {
         // console.log(cat);
+
         // create element
         const categoryDiv = document.createElement('div');
         categoryDiv.innerHTML = `
-                <button class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
+                <button id="btn-${cat.category_id}" onclick="loadCategoriesVideos(${cat.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
 
         `;
         // append the element
@@ -64,6 +80,17 @@ function displayCategories(categories) {
 
 const displayVideos = (videos) => {
     const videoContainer = document.getElementById('video-container');
+
+    videoContainer.innerHTML = "";
+
+    if (videos.length == 0) {
+        videoContainer.innerHTML = `        <div class="py-20 col-span-full flex flex-col justify-center items-center text-center">
+            <img class="w-[120px]" src="assets/Icon.png" alt="">
+            <h2 class="text-2xl font-bold">Ooops!! Sorry,there is no content here</h2>
+        </div>`;
+
+        return;
+    }
 
     videos.forEach(video => {
         console.log(video);
@@ -100,4 +127,4 @@ const displayVideos = (videos) => {
 }
 
 loadCategories();
-loadVideos();
+// loadVideos();
